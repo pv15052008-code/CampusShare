@@ -7,19 +7,24 @@ let currentFaculty = null;
 let currentFacultyCatId = "";
 let facultySearchTimer = null;
 
+function getBasePath() {
+  return window.location.pathname.includes("/CampusShare") ? "/CampusShare/" : "/";
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const userStr = localStorage.getItem("campus_user");
+  const base = getBasePath();
   if (!userStr) {
-    window.location.href = "/";
+    window.location.href = `${base}index.html`;
     return;
   }
 
   currentFaculty = JSON.parse(userStr);
   if (currentFaculty.role !== "faculty") {
     if (currentFaculty.role === "admin") {
-      window.location.href = "/admin";
+      window.location.href = `${base}admin.html`;
     } else {
-      window.location.href = "/dashboard";
+      window.location.href = `${base}dashboard.html`;
     }
     return;
   }
@@ -41,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function handleFacultyLogout() {
   localStorage.removeItem("campus_user");
-  window.location.href = "/";
+  window.location.href = `${getBasePath()}index.html`;
 }
 
 function switchFacultyTab(tab) {

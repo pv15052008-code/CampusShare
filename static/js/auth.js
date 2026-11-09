@@ -142,13 +142,22 @@ async function handleLogin(e) {
   }
 }
 
+function getBasePath() {
+  const p = window.location.pathname;
+  if (p.includes("/CampusShare")) {
+    return "/CampusShare/";
+  }
+  return "/";
+}
+
 function redirectUser(role) {
+  const base = getBasePath();
   if (role === "admin") {
-    window.location.href = "/admin";
+    window.location.href = `${base}admin.html`;
   } else if (role === "faculty") {
-    window.location.href = "/faculty";
+    window.location.href = `${base}faculty.html`;
   } else {
-    window.location.href = "/dashboard";
+    window.location.href = `${base}dashboard.html`;
   }
 }
 

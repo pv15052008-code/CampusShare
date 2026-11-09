@@ -5,17 +5,22 @@
 
 let currentAdmin = null;
 
+function getBasePath() {
+  return window.location.pathname.includes("/CampusShare") ? "/CampusShare/" : "/";
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const userStr = localStorage.getItem("campus_user");
+  const base = getBasePath();
   if (!userStr) {
-    window.location.href = "/";
+    window.location.href = `${base}index.html`;
     return;
   }
 
   currentAdmin = JSON.parse(userStr);
   if (currentAdmin.role !== "admin") {
     alert("Unauthorized access. Admin privileges required.");
-    window.location.href = "/dashboard";
+    window.location.href = `${base}dashboard.html`;
     return;
   }
 
@@ -25,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function handleAdminLogout() {
   localStorage.removeItem("campus_user");
-  window.location.href = "/";
+  window.location.href = `${getBasePath()}index.html`;
 }
 
 function showAdminAlert(message, type = "success") {

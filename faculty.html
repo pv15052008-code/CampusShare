@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusShare – Faculty Portal</title>
+  <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <nav class="navbar">
+    <a href="faculty.html" class="brand">
+      <div class="brand-icon" style="background: #0284c7;">👨‍🏫</div>
+      <span>CampusShare Faculty</span>
+    </a>
+    <div class="nav-actions">
+      <div class="user-badge" style="background: #e0f2fe; border-color: #bae6fd; color: #0369a1;" id="faculty-display">
+        👨‍🏫 <span id="faculty-name">Faculty</span> (<span id="faculty-dept">Dept</span>)
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="openAddFacultyResourceModal()" style="background: #0284c7;">
+        + Share Department Asset
+      </button>
+      <button class="btn btn-outline btn-sm" onclick="handleFacultyLogout()">
+        Logout
+      </button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- View Switcher Tabs -->
+    <div class="view-tabs">
+      <button class="view-tab active" id="tab-fac-explore" onclick="switchFacultyTab('explore')">
+        📦 Campus & Department Equipment
+      </button>
+      <button class="view-tab" id="tab-fac-bookings" onclick="switchFacultyTab('my-bookings')">
+        📋 Faculty Reservations (<span id="fac-bookings-count">0</span>)
+      </button>
+    </div>
+
+    <!-- TAB 1: EXPLORE RESOURCES -->
+    <div id="section-fac-explore">
+      <div class="dashboard-hero" style="border-left: 4px solid #0284c7;">
+        <h2 style="font-size: 1.4rem; font-weight: 700; color: #0369a1;">
+          Faculty Resource & Lab Equipment Portal
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">
+          Reserve projectors, discussion halls, high-end computing servers, and research lab kits across academic departments.
+        </p>
+
+        <div class="search-filter-bar">
+          <div class="search-input-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="fac-search-input" class="search-input" 
+                   placeholder="Search equipment, lab kits, projectors, study rooms..." 
+                   oninput="handleFacultySearch()">
+          </div>
+
+          <select id="fac-status-filter" class="form-control" style="width: auto; min-width: 160px;" onchange="loadFacultyResources()">
+            <option value="">All Statuses</option>
+            <option value="Available" selected>Available Only</option>
+            <option value="Booked">Booked</option>
+            <option value="Maintenance">Maintenance</option>
+          </select>
+        </div>
+
+        <div class="category-pills" id="fac-category-pills">
+          <button class="category-pill active" onclick="filterFacultyCategory('', this)">All Categories</button>
+        </div>
+      </div>
+
+      <div id="fac-resource-loading" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+        Loading resources from database...
+      </div>
+      <div class="resource-grid" id="fac-resource-grid" style="display: none;"></div>
+      
+      <div id="fac-resource-empty" class="empty-state" style="display: none;">
+        <div class="empty-state-icon">🔍</div>
+        <h3>No resources found</h3>
+        <p>Try resetting filters or searching for another keyword.</p>
+      </div>
+    </div>
+
+    <!-- TAB 2: MY BOOKINGS -->
+    <div id="section-fac-bookings" style="display: none;">
+      <div style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h2 style="font-size: 1.3rem; font-weight: 700;">Faculty Reservation History</h2>
+          <p style="color: var(--text-muted); font-size: 0.85rem;">Track approved equipment loans and booking statuses.</p>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="loadFacultyBookings()">🔄 Refresh</button>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Resource Name</th>
+              <th>Category</th>
+              <th>Reservation Date</th>
+              <th>Due Return Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="fac-bookings-tbody">
+            <!-- Loaded dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Reserve Equipment -->
+  <div class="modal-overlay" id="fac-booking-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="fac-modal-resource-title">Reserve Resource</h3>
+        <button class="modal-close" onclick="closeFacultyBookingModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="fac-modal-alert" class="alert"></div>
+        <input type="hidden" id="fac-modal-resource-id">
+
+        <p id="fac-modal-resource-desc" style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1rem;"></p>
+        <div style="background: #e0f2fe; border: 1px solid #bae6fd; padding: 0.75rem; border-radius: var(--radius-sm); margin-bottom: 1.25rem;">
+          <div style="font-size: 0.8rem; color: #0369a1;">Custodian / Owner:</div>
+          <div style="font-weight: 600; color: #0c4a6e;" id="fac-modal-owner-name">Department Coordinator</div>
+        </div>
+
+        <div class="form-group">
+          <label for="fac-booking-return-date">Expected Return Date</label>
+          <input type="date" id="fac-booking-return-date" class="form-control" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeFacultyBookingModal()">Cancel</button>
+        <button class="btn btn-primary" id="fac-confirm-booking-btn" onclick="submitFacultyBookingRequest()" style="background: #0284c7;">
+          Confirm Reservation
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Share Departmental Resource -->
+  <div class="modal-overlay" id="fac-add-resource-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Share Department Asset or Lab Kit</h3>
+        <button class="modal-close" onclick="closeAddFacultyResourceModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="fac-add-res-alert" class="alert"></div>
+
+        <form id="fac-add-resource-form" onsubmit="submitFacultyNewResource(event)">
+          <div class="form-group">
+            <label for="fac-res-name">Asset Name</label>
+            <input type="text" id="fac-res-name" class="form-control" placeholder="e.g. 3D Printer Ender-3 V2" required>
+          </div>
+
+          <div class="form-group">
+            <label for="fac-res-category">Category</label>
+            <select id="fac-res-category" class="form-control" required>
+              <option value="">Select Category</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="fac-res-desc">Description & Lab Location</label>
+            <textarea id="fac-res-desc" class="form-control" rows="3" placeholder="Room number, departmental guidelines, specifications..." required></textarea>
+          </div>
+
+          <div class="modal-footer" style="padding-left:0; padding-right:0; margin-bottom:-1.5rem;">
+            <button type="button" class="btn btn-outline" onclick="closeAddFacultyResourceModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="fac-add-res-btn" style="background: #0284c7;">Add to Inventory</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    CampusShare &copy; 2026 – Smart Campus Resource Sharing & Booking System (Faculty Management)
+  </footer>
+
+  <script src="static/js/api.js"></script>
+  <script src="static/js/faculty.js"></script>
+</body>
+</html>

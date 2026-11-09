@@ -7,17 +7,26 @@ let currentUser = null;
 let currentCategoryId = "";
 let searchDebounceTimer = null;
 
+function getBasePath() {
+  return window.location.pathname.includes("/CampusShare") ? "/CampusShare/" : "/";
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   // Check student login session
   const userStr = localStorage.getItem("campus_user");
+  const base = getBasePath();
   if (!userStr) {
-    window.location.href = "/";
+    window.location.href = `${base}index.html`;
     return;
   }
 
   currentUser = JSON.parse(userStr);
   if (currentUser.role === "admin") {
-    window.location.href = "/admin";
+    window.location.href = `${base}admin.html`;
+    return;
+  }
+  if (currentUser.role === "faculty") {
+    window.location.href = `${base}faculty.html`;
     return;
   }
 
@@ -41,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function handleLogout() {
   localStorage.removeItem("campus_user");
-  window.location.href = "/";
+  window.location.href = `${getBasePath()}index.html`;
 }
 
 function switchDashboardTab(tab) {
