@@ -84,7 +84,8 @@ async function loadAdminData() {
 // ------------------------------------------------------------
 async function loadStats() {
   try {
-    const res = await fetch("/api/admin/stats");
+    const apiBase = window.CAMPUS_API_BASE || "";
+    const res = await fetch(`${apiBase}/api/admin/stats`);
     const data = await res.json();
     if (!data.success) return;
 
@@ -103,7 +104,8 @@ async function loadStats() {
 async function loadBookings() {
   const tbody = document.getElementById("admin-bookings-tbody");
   try {
-    const res = await fetch("/api/bookings");
+    const apiBase = window.CAMPUS_API_BASE || "";
+    const res = await fetch(`${apiBase}/api/bookings`);
     const data = await res.json();
     if (!data.success) return;
 
@@ -162,7 +164,8 @@ async function loadBookings() {
 
 async function updateBookingStatus(bookingId, status) {
   try {
-    const res = await fetch("/api/bookings/status", {
+    const apiBase = window.CAMPUS_API_BASE || "";
+    const res = await fetch(`${apiBase}/api/bookings/status`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ booking_id: bookingId, status: status })
@@ -188,7 +191,8 @@ async function updateBookingStatus(bookingId, status) {
 async function loadInventory() {
   const tbody = document.getElementById("admin-inventory-tbody");
   try {
-    const res = await fetch("/api/resources");
+    const apiBase = window.CAMPUS_API_BASE || "";
+    const res = await fetch(`${apiBase}/api/resources`);
     const data = await res.json();
     if (!data.success) return;
 
@@ -224,7 +228,8 @@ async function deleteResource(resourceId, name) {
   }
 
   try {
-    const res = await fetch(`/api/resources/${resourceId}`, {
+    const apiBase = window.CAMPUS_API_BASE || "";
+    const res = await fetch(`${apiBase}/api/resources/${resourceId}`, {
       method: "DELETE"
     });
     const data = await res.json();
@@ -248,7 +253,8 @@ async function deleteResource(resourceId, name) {
 async function loadStudents() {
   const tbody = document.getElementById("admin-students-tbody");
   try {
-    const res = await fetch("/api/students");
+    const apiBase = window.CAMPUS_API_BASE || "";
+    const res = await fetch(`${apiBase}/api/students`);
     const data = await res.json();
     if (!data.success) return;
 

@@ -84,7 +84,8 @@ async function quickDemoLogin(role) {
   loginBtn.textContent = "Authenticating Demo Account...";
 
   try {
-    const res = await fetch("/api/auth/login", {
+    const apiBase = window.CAMPUS_API_BASE || "";
+    const res = await fetch(`${apiBase}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ role, email, password })
@@ -122,7 +123,8 @@ async function handleLogin(e) {
   loginBtn.textContent = "Verifying...";
 
   try {
-    const res = await fetch("/api/auth/login", {
+    const apiBase = window.CAMPUS_API_BASE || "";
+    const res = await fetch(`${apiBase}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ role, email, password })
@@ -192,7 +194,8 @@ async function handleRegister(e) {
   regBtn.textContent = "Creating account...";
 
   try {
-    const res = await fetch("/api/auth/register", {
+    const apiBase = window.CAMPUS_API_BASE || "";
+    const res = await fetch(`${apiBase}/api/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)

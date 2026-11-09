@@ -48,3 +48,5 @@ desktop.ini
 # Node / Vercel
 node_modules/
 .vercel
+
+.vercel

@@ -66,7 +66,8 @@ function switchFacultyTab(tab) {
 
 async function loadFacultyCategories() {
   try {
-    const res = await fetch("/api/categories");
+    const apiBase = window.CAMPUS_API_BASE || "";
+    const res = await fetch(`${apiBase}/api/categories`);
     const data = await res.json();
     if (!data.success) return;
 
@@ -121,7 +122,8 @@ async function loadFacultyResources() {
   if (status) params.append("status", status);
 
   try {
-    const res = await fetch(`/api/resources?${params.toString()}`);
+    const apiBase = window.CAMPUS_API_BASE || "";
+    const res = await fetch(`${apiBase}/api/resources?${params.toString()}`);
     const data = await res.json();
     loading.style.display = "none";
 
@@ -207,7 +209,8 @@ async function submitFacultyBookingRequest() {
   confirmBtn.textContent = "Submitting...";
 
   try {
-    const res = await fetch("/api/bookings", {
+    const apiBase = window.CAMPUS_API_BASE || "";
+    const res = await fetch(`${apiBase}/api/bookings`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -272,7 +275,8 @@ async function submitFacultyNewResource(e) {
   addBtn.textContent = "Saving...";
 
   try {
-    const res = await fetch("/api/resources", {
+    const apiBase = window.CAMPUS_API_BASE || "";
+    const res = await fetch(`${apiBase}/api/resources`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -317,7 +321,8 @@ async function loadFacultyBookings() {
   const countBadge = document.getElementById("fac-bookings-count");
 
   try {
-    const res = await fetch(`/api/bookings?student_id=${currentFaculty.Faculty_ID}&borrower_type=Faculty`);
+    const apiBase = window.CAMPUS_API_BASE || "";
+    const res = await fetch(`${apiBase}/api/bookings?student_id=${currentFaculty.Faculty_ID}&borrower_type=Faculty`);
     const data = await res.json();
 
     if (!data.success) return;
