@@ -66,9 +66,7 @@ function switchFacultyTab(tab) {
 
 async function loadFacultyCategories() {
   try {
-    const apiBase = window.CAMPUS_API_BASE || "";
-    const res = await fetch(`${apiBase}/api/categories`);
-    const data = await res.json();
+    const data = await window.apiCall("/api/categories");
     if (!data.success) return;
 
     const pills = document.getElementById("fac-category-pills");
@@ -122,9 +120,7 @@ async function loadFacultyResources() {
   if (status) params.append("status", status);
 
   try {
-    const apiBase = window.CAMPUS_API_BASE || "";
-    const res = await fetch(`${apiBase}/api/resources?${params.toString()}`);
-    const data = await res.json();
+    const data = await window.apiCall(`/api/resources?${params.toString()}`);
     loading.style.display = "none";
 
     if (!data.success || data.resources.length === 0) {
@@ -209,8 +205,7 @@ async function submitFacultyBookingRequest() {
   confirmBtn.textContent = "Submitting...";
 
   try {
-    const apiBase = window.CAMPUS_API_BASE || "";
-    const res = await fetch(`${apiBase}/api/bookings`, {
+    const data = await window.apiCall("/api/bookings", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -220,7 +215,6 @@ async function submitFacultyBookingRequest() {
         return_date: returnDate
       })
     });
-    const data = await res.json();
 
     if (data.success) {
       alertEl.className = "alert alert-success";
@@ -275,8 +269,7 @@ async function submitFacultyNewResource(e) {
   addBtn.textContent = "Saving...";
 
   try {
-    const apiBase = window.CAMPUS_API_BASE || "";
-    const res = await fetch(`${apiBase}/api/resources`, {
+    const data = await window.apiCall("/api/resources", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -287,7 +280,6 @@ async function submitFacultyNewResource(e) {
         owner_type: "Faculty"
       })
     });
-    const data = await res.json();
 
     if (data.success) {
       alertEl.className = "alert alert-success";
@@ -321,9 +313,7 @@ async function loadFacultyBookings() {
   const countBadge = document.getElementById("fac-bookings-count");
 
   try {
-    const apiBase = window.CAMPUS_API_BASE || "";
-    const res = await fetch(`${apiBase}/api/bookings?student_id=${currentFaculty.Faculty_ID}&borrower_type=Faculty`);
-    const data = await res.json();
+    const data = await window.apiCall(`/api/bookings?student_id=${currentFaculty.Faculty_ID}&borrower_type=Faculty`);
 
     if (!data.success) return;
 

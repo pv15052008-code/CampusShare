@@ -84,13 +84,11 @@ async function quickDemoLogin(role) {
   loginBtn.textContent = "Authenticating Demo Account...";
 
   try {
-    const apiBase = window.CAMPUS_API_BASE || "";
-    const res = await fetch(`${apiBase}/api/auth/login`, {
+    const data = await window.apiCall("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ role, email, password })
     });
-    const data = await res.json();
 
     if (data.success) {
       localStorage.setItem("campus_user", JSON.stringify(data.user));
@@ -123,13 +121,11 @@ async function handleLogin(e) {
   loginBtn.textContent = "Verifying...";
 
   try {
-    const apiBase = window.CAMPUS_API_BASE || "";
-    const res = await fetch(`${apiBase}/api/auth/login`, {
+    const data = await window.apiCall("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ role, email, password })
     });
-    const data = await res.json();
 
     if (data.success) {
       localStorage.setItem("campus_user", JSON.stringify(data.user));
@@ -194,13 +190,11 @@ async function handleRegister(e) {
   regBtn.textContent = "Creating account...";
 
   try {
-    const apiBase = window.CAMPUS_API_BASE || "";
-    const res = await fetch(`${apiBase}/api/auth/register`, {
+    const data = await window.apiCall("/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
-    const data = await res.json();
 
     if (data.success) {
       showAlert(data.message, "success");

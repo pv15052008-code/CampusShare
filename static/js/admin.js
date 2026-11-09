@@ -84,9 +84,7 @@ async function loadAdminData() {
 // ------------------------------------------------------------
 async function loadStats() {
   try {
-    const apiBase = window.CAMPUS_API_BASE || "";
-    const res = await fetch(`${apiBase}/api/admin/stats`);
-    const data = await res.json();
+    const data = await window.apiCall("/api/admin/stats");
     if (!data.success) return;
 
     document.getElementById("stat-students").textContent = data.stats.total_students;
@@ -104,9 +102,7 @@ async function loadStats() {
 async function loadBookings() {
   const tbody = document.getElementById("admin-bookings-tbody");
   try {
-    const apiBase = window.CAMPUS_API_BASE || "";
-    const res = await fetch(`${apiBase}/api/bookings`);
-    const data = await res.json();
+    const data = await window.apiCall("/api/bookings");
     if (!data.success) return;
 
     if (data.bookings.length === 0) {
@@ -164,13 +160,11 @@ async function loadBookings() {
 
 async function updateBookingStatus(bookingId, status) {
   try {
-    const apiBase = window.CAMPUS_API_BASE || "";
-    const res = await fetch(`${apiBase}/api/bookings/status`, {
+    const data = await window.apiCall("/api/bookings/status", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ booking_id: bookingId, status: status })
     });
-    const data = await res.json();
 
     if (data.success) {
       showAdminAlert(`Booking #${bookingId} successfully updated to: ${status}`);
@@ -191,9 +185,7 @@ async function updateBookingStatus(bookingId, status) {
 async function loadInventory() {
   const tbody = document.getElementById("admin-inventory-tbody");
   try {
-    const apiBase = window.CAMPUS_API_BASE || "";
-    const res = await fetch(`${apiBase}/api/resources`);
-    const data = await res.json();
+    const data = await window.apiCall("/api/resources");
     if (!data.success) return;
 
     tbody.innerHTML = "";
@@ -228,11 +220,9 @@ async function deleteResource(resourceId, name) {
   }
 
   try {
-    const apiBase = window.CAMPUS_API_BASE || "";
-    const res = await fetch(`${apiBase}/api/resources/${resourceId}`, {
+    const data = await window.apiCall(`/api/resources/${resourceId}`, {
       method: "DELETE"
     });
-    const data = await res.json();
 
     if (data.success) {
       showAdminAlert(`Resource #${resourceId} '${name}' deleted successfully.`);
@@ -253,9 +243,7 @@ async function deleteResource(resourceId, name) {
 async function loadStudents() {
   const tbody = document.getElementById("admin-students-tbody");
   try {
-    const apiBase = window.CAMPUS_API_BASE || "";
-    const res = await fetch(`${apiBase}/api/students`);
-    const data = await res.json();
+    const data = await window.apiCall("/api/students");
     if (!data.success) return;
 
     tbody.innerHTML = "";
