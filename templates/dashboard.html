@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusShare – Student Dashboard</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <nav class="navbar">
+    <a href="/dashboard" class="brand">
+      <div class="brand-icon">🎓</div>
+      <span>CampusShare</span>
+    </a>
+    <div class="nav-actions">
+      <div class="user-badge" id="user-display">
+        👤 <span id="user-name">Loading...</span> (<span id="user-branch">CSE</span>)
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="openAddResourceModal()">
+        + Share a Resource
+      </button>
+      <button class="btn btn-outline btn-sm" onclick="handleLogout()">
+        Logout
+      </button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- View Switcher Tabs -->
+    <div class="view-tabs">
+      <button class="view-tab active" id="tab-explore" onclick="switchDashboardTab('explore')">
+        📦 Explore Campus Resources
+      </button>
+      <button class="view-tab" id="tab-my-bookings" onclick="switchDashboardTab('my-bookings')">
+        📋 My Borrowing History (<span id="my-bookings-count">0</span>)
+      </button>
+    </div>
+
+    <!-- TAB 1: EXPLORE RESOURCES -->
+    <div id="section-explore">
+      <!-- Search & Filters Hero -->
+      <div class="dashboard-hero">
+        <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--primary);">
+          Find & Borrow Campus Resources
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">
+          Borrow lab kits, laptops, reference books, cameras, and study rooms shared by students and departments.
+        </p>
+
+        <div class="search-filter-bar">
+          <div class="search-input-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="search-input" class="search-input" 
+                   placeholder="Search by resource name (e.g., Laptop, Arduino, Camera, Book)..." 
+                   oninput="handleSearch()">
+          </div>
+
+          <select id="status-filter" class="form-control" style="width: auto; min-width: 160px;" onchange="loadResources()">
+            <option value="">All Statuses</option>
+            <option value="Available" selected>Available Only</option>
+            <option value="Booked">Currently Booked</option>
+            <option value="Maintenance">Maintenance</option>
+          </select>
+        </div>
+
+        <!-- Category Pills -->
+        <div class="category-pills" id="category-pills">
+          <button class="category-pill active" onclick="filterCategory('', this)">All Categories</button>
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+
+      <!-- Resource Cards Grid -->
+      <div id="resource-loading" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+        Loading resources from database...
+      </div>
+      <div class="resource-grid" id="resource-grid" style="display: none;"></div>
+      
+      <!-- Empty State -->
+      <div id="resource-empty" class="empty-state" style="display: none;">
+        <div class="empty-state-icon">🔍</div>
+        <h3>No resources found</h3>
+        <p>Try searching for a different keyword or resetting category filters.</p>
+      </div>
+    </div>
+
+    <!-- TAB 2: MY BOOKINGS HISTORY -->
+    <div id="section-my-bookings" style="display: none;">
+      <div style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h2 style="font-size: 1.3rem; font-weight: 700;">My Resource Requests & Loans</h2>
+          <p style="color: var(--text-muted); font-size: 0.85rem;">Track approval status and upcoming return dates.</p>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="loadMyBookings()">🔄 Refresh</button>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Resource Name</th>
+              <th>Category</th>
+              <th>Request Date</th>
+              <th>Return Due Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="my-bookings-table-body">
+            <!-- Loaded dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL: Request to Borrow Resource
+       ============================================================ -->
+  <div class="modal-overlay" id="booking-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-resource-title">Request Resource</h3>
+        <button class="modal-close" onclick="closeBookingModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="modal-alert" class="alert"></div>
+        <input type="hidden" id="modal-resource-id">
+
+        <p id="modal-resource-desc" style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1rem;"></p>
+        <div style="background: var(--primary-light); border: 1px solid var(--primary-border); padding: 0.75rem; border-radius: var(--radius-sm); margin-bottom: 1.25rem;">
+          <div style="font-size: 0.8rem; color: var(--text-muted);">Resource Owner:</div>
+          <div style="font-weight: 600; color: var(--primary);" id="modal-owner-name">Prof. / Student</div>
+        </div>
+
+        <div class="form-group">
+          <label for="booking-return-date">Requested Return Date</label>
+          <input type="date" id="booking-return-date" class="form-control" required>
+          <small style="color: var(--text-light); font-size: 0.75rem;">Return date must be today or in the future.</small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeBookingModal()">Cancel</button>
+        <button class="btn btn-primary" id="confirm-booking-btn" onclick="submitBookingRequest()">
+          Submit Request
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL: Add / Share New Resource
+       ============================================================ -->
+  <div class="modal-overlay" id="add-resource-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Share a New Campus Resource</h3>
+        <button class="modal-close" onclick="closeAddResourceModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="add-res-alert" class="alert"></div>
+
+        <form id="add-resource-form" onsubmit="submitNewResource(event)">
+          <div class="form-group">
+            <label for="res-name">Resource Name</label>
+            <input type="text" id="res-name" class="form-control" placeholder="e.g. Scientific Calculator Casio fx-991EX" required>
+          </div>
+
+          <div class="form-group">
+            <label for="res-category">Category</label>
+            <select id="res-category" class="form-control" required>
+              <option value="">Select Category</option>
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="res-desc">Description & Specifications</label>
+            <textarea id="res-desc" class="form-control" rows="3" placeholder="Condition, accessories included, pickup instructions..." required></textarea>
+          </div>
+
+          <div class="modal-footer" style="padding-left:0; padding-right:0; margin-bottom:-1.5rem;">
+            <button type="button" class="btn btn-outline" onclick="closeAddResourceModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="add-res-btn">Add to Inventory</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    CampusShare &copy; 2026 – Smart Campus Resource Sharing & Booking System
+  </footer>
+
+  <script src="/static/js/dashboard.js"></script>
+</body>
+</html>

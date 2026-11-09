@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusShare – Administrator Portal</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <nav class="navbar">
+    <a href="/admin" class="brand">
+      <div class="brand-icon">🛡️</div>
+      <span>CampusShare Admin</span>
+    </a>
+    <div class="nav-actions">
+      <div class="user-badge" style="background: #fef3c7; border-color: #fde68a; color: #92400e;">
+        🛡️ <span id="admin-name">Admin</span>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="handleAdminLogout()">
+        Logout
+      </button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div style="margin-bottom: 1.5rem;">
+      <h1 style="font-size: 1.6rem; font-weight: 700; color: var(--text-main);">
+        Administrator Operations & DBMS Control
+      </h1>
+      <p style="color: var(--text-muted); font-size: 0.9rem;">
+        Monitor campus resource requests, oversee student records, and manage inventory.
+      </p>
+    </div>
+
+    <!-- Live Statistics Metric Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div>
+          <div class="stat-number" id="stat-students">0</div>
+          <div class="stat-label">Registered Students</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">📦</div>
+        <div>
+          <div class="stat-number" id="stat-resources">0</div>
+          <div class="stat-label">Total Resources Listed</div>
+        </div>
+      </div>
+
+      <div class="stat-card" style="border-left: 4px solid #f59e0b;">
+        <div class="stat-icon" style="background: #fef3c7; color: #b45309;">⏳</div>
+        <div>
+          <div class="stat-number" id="stat-pending" style="color: #b45309;">0</div>
+          <div class="stat-label">Pending Requests</div>
+        </div>
+      </div>
+
+      <div class="stat-card" style="border-left: 4px solid #10b981;">
+        <div class="stat-icon" style="background: #d1fae5; color: #047857;">🔄</div>
+        <div>
+          <div class="stat-number" id="stat-active" style="color: #047857;">0</div>
+          <div class="stat-label">Active Approved Loans</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="view-tabs">
+      <button class="view-tab active" id="tab-admin-bookings" onclick="switchAdminTab('bookings')">
+        📝 Booking Requests Management
+      </button>
+      <button class="view-tab" id="tab-admin-inventory" onclick="switchAdminTab('inventory')">
+        📦 Resource Inventory
+      </button>
+      <button class="view-tab" id="tab-admin-students" onclick="switchAdminTab('students')">
+        🎓 Student Directory
+      </button>
+    </div>
+
+    <!-- Feedback Alert -->
+    <div id="admin-alert" class="alert"></div>
+
+    <!-- SECTION 1: BOOKINGS MANAGEMENT -->
+    <div id="section-admin-bookings">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3>All Student Booking Requests</h3>
+        <button class="btn btn-outline btn-sm" onclick="loadAdminData()">🔄 Refresh Requests</button>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Student Name</th>
+              <th>Branch</th>
+              <th>Resource Requested</th>
+              <th>Category</th>
+              <th>Booking Date</th>
+              <th>Return Date</th>
+              <th>Status</th>
+              <th>Approval Actions</th>
+            </tr>
+          </thead>
+          <tbody id="admin-bookings-tbody">
+            <tr><td colspan="9" style="text-align: center;">Loading bookings...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SECTION 2: RESOURCE INVENTORY -->
+    <div id="section-admin-inventory" style="display: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3>Complete Campus Resource Catalog</h3>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Resource Name</th>
+              <th>Category</th>
+              <th>Owner / Shared By</th>
+              <th>Availability</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="admin-inventory-tbody">
+            <tr><td colspan="6" style="text-align: center;">Loading inventory...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SECTION 3: STUDENT DIRECTORY -->
+    <div id="section-admin-students" style="display: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3>Registered Student Accounts</h3>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Student ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Branch</th>
+              <th>Academic Year</th>
+            </tr>
+          </thead>
+          <tbody id="admin-students-tbody">
+            <tr><td colspan="5" style="text-align: center;">Loading student records...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    CampusShare &copy; 2026 – Smart Campus Resource Sharing & Booking System (Admin Control Center)
+  </footer>
+
+  <script src="/static/js/admin.js"></script>
+</body>
+</html>

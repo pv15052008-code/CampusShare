@@ -1,0 +1,4 @@
+# CampusShare Dependencies
+pymysql>=1.1.0
+cryptography>=42.0.0
+gunicorn>=21.2.0

@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/static/$1"
+    },
+    {
+      "src": "/dashboard",
+      "dest": "/templates/dashboard.html"
+    },
+    {
+      "src": "/faculty",
+      "dest": "/templates/faculty.html"
+    },
+    {
+      "src": "/admin",
+      "dest": "/templates/admin.html"
+    },
+    {
+      "src": "/",
+      "dest": "/templates/index.html"
+    }
+  ]
+}
