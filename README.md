@@ -141,7 +141,7 @@ erDiagram
 ### Step 1: Open Terminal / Command Prompt
 Navigate to the project directory:
 ```bash
-cd "c:\Users\PAYAL VERMA\OneDrive\Desktop\dbms- capstone"
+cd "c:\Users\ADITYA SAINI\Desktop\campusshare"
 ```
 
 ### Step 2: Start the Web Server
